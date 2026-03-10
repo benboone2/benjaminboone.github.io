@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benjamin Boone — Systems Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050a12;
+      --surface: #0c1524;
+      --surface2: #121e32;
+      --border: rgba(80, 140, 220, 0.16);
+      --text: #c0d4ee;
+      --muted: #4e6880;
+      --accent: #3eb3e8;
+      --amber: #f5a623;
+      --white: #e4eff8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(62, 179, 232, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62, 179, 232, 0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 62px;
+      background: rgba(5, 10, 18, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-logo em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s;
+      user-select: none;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* ── PAGE SYSTEM ── */
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding-top: 62px;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SHARED ── */
+    .inner {
+      max-width: 920px;
+      margin: 0 auto;
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+    }
+
+    .page-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 200;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .page-title strong { font-weight: 700; }
+
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── ABOUT ── */
+    .hero {
+      padding: 7rem 0 5rem;
+    }
+
+    .hero-sub {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      margin-bottom: 3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-sub span { color: var(--amber); }
+
+    .hero-bio {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--text);
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: var(--surface);
+    }
+
+    .tag.hi {
+      border-color: rgba(62, 179, 232, 0.35);
+      color: var(--accent);
+      background: rgba(62, 179, 232, 0.05);
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.6rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s;
+      border: none;
+      display: inline-block;
+    }
+
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: #67c9f0; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover { color: var(--text); border-color: rgba(80,140,220,0.4); }
+
+    /* About — skills grid */
+    .about-skills {
+      padding: 4rem 0 6rem;
+    }
+
+    .grid-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 1.5rem;
+    }
+
+    .grid-cell {
+      background: var(--surface);
+      padding: 1.6rem 1.5rem;
+    }
+
+    .grid-cell h3 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--amber);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    .grid-cell ul {
+      list-style: none;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 2;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-header {
+      padding: 5rem 0 2.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-top: none;
+      margin-bottom: 6rem;
+    }
+
+    .proj-card {
+      background: var(--surface);
+      padding: 2rem;
+      transition: background 0.18s;
+    }
+
+    .proj-card:hover { background: var(--surface2); }
+
+    .proj-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+
+    .proj-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .proj-desc {
+      font-size: 0.83rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 1.4rem;
+    }
+
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .proj-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      padding: 0.22rem 0.55rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .proj-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .proj-link:hover { text-decoration: underline; }
+
+    /* ── BLOG ── */
+    .blog-wrap {
+      padding: 7rem 0 6rem;
+      max-width: 640px;
+    }
+
+    .blog-icon {
+      width: 52px; height: 52px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+      font-size: 1.3rem;
+    }
+
+    .blog-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--muted);
+      margin-top: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .blog-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.18s;
+    }
+
+    .blog-btn:hover { background: #67c9f0; }
+
+    /* ── RESUME ── */
+    .resume-wrap {
+      padding: 5rem 0 6rem;
+      max-width: 680px;
+    }
+
+    .resume-card {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      padding: 1.75rem 2rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .resume-icon { font-size: 1.8rem; opacity: 0.55; }
+
+    .resume-meta { flex: 1; }
+
+    .resume-meta h3 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+
+    .resume-meta p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── CONTACT ── */
+    .contact-wrap {
+      padding: 5rem 0 6rem;
+      max-width: 680px;
+    }
+
+    .contact-note {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-top: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.35rem 1.75rem;
+      background: var(--surface);
+      text-decoration: none;
+      transition: background 0.18s;
+    }
+
+    .contact-row:hover { background: var(--surface2); }
+
+    .contact-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      width: 90px;
+      flex-shrink: 0;
+    }
+
+    .contact-val {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .contact-arrow {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 680px) {
+      nav { padding: 0 1.25rem; }
+      .nav-logo { font-size: 0.78rem; }
+      .nav-links { gap: 1.25rem; }
+      .inner { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links { gap: 0.9rem; }
+      .nav-links a { font-size: 0.58rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="show('about')">Benjamin <em>Boone</em></div>
+  <ul class="nav-links">
+    <li><a id="n-about"    onclick="show('about')"    class="active">About</a></li>
+    <li><a id="n-projects" onclick="show('projects')">Projects</a></li>
+    <li><a id="n-blog"     onclick="show('blog')">Blog</a></li>
+    <li><a id="n-resume"   onclick="show('resume')">Resume</a></li>
+    <li><a id="n-contact"  onclick="show('contact')">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── ABOUT ── -->
+<div class="page active" id="p-about">
+  <div class="inner">
+    <div class="hero">
+      <div class="eyebrow">// systems engineer</div>
+      <h1 class="page-title"><strong>Benjamin</strong><br>Boone</h1>
+      <p class="hero-sub">Aerospace &nbsp;·&nbsp; <span>Nuclear Energy</span> &nbsp;·&nbsp; Data Infrastructure</p>
+      <p class="hero-bio">
+        I work at the intersection of complex systems engineering, high-stakes certification, and the infrastructure powering the next generation of energy and computing. My background spans large-scale aircraft development, nuclear power systems, and the technical disciplines that underpin modern data center buildout — with a focus on rigorous requirements, model-based methods, and cross-functional execution.
+      </p>
+      <div class="tags">
+        <span class="tag hi">Systems Engineering</span>
+        <span class="tag hi">FAA Part 25</span>
+        <span class="tag hi">Nuclear Power</span>
+        <span class="tag">MBSE</span>
+        <span class="tag">Requirements Management</span>
+        <span class="tag">Monte Carlo Modeling</span>
+        <span class="tag">Data Infrastructure</span>
+        <span class="tag">Python</span>
+        <span class="tag">SCADA / HMI</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" onclick="show('projects')">View Projects</a>
+        <a class="btn btn-outline" onclick="show('contact')">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="about-skills">
+      <div class="eyebrow">// domains &amp; capabilities</div>
+      <div class="grid-box">
+        <div class="grid-cell">
+          <h3>Systems Engineering</h3>
+          <ul>
+            <li>Functional Decomposition</li>
+            <li>Requirements Management</li>
+            <li>MBSE / GENESYS / Jama</li>
+            <li>FAA Part 25 Certification</li>
+            <li>Interface Control</li>
+            <li>IDEF0 / SysML</li>
+          </ul>
+        </div>
+        <div class="grid-cell">
+          <h3>Energy &amp; Nuclear</h3>
+          <ul>
+            <li>SMR / Microreactor Systems</li>
+            <li>SCADA / HMI Architecture</li>
+            <li>10 CFR 50 / NQA-1</li>
+            <li>Brayton Cycle Systems</li>
+            <li>Process Heat Integration</li>
+            <li>Air-Gapped Infrastructure</li>
+          </ul>
+        </div>
+        <div class="grid-cell">
+          <h3>Analysis &amp; Modeling</h3>
+          <ul>
+            <li>Monte Carlo Simulation</li>
+            <li>Lifecycle Cost Modeling</li>
+            <li>Python / NumPy / Pandas</li>
+            <li>Probabilistic Risk</li>
+            <li>Data Visualization</li>
+          </ul>
+        </div>
+        <div class="grid-cell">
+          <h3>Tools &amp; Infra</h3>
+          <ul>
+            <li>Jama Connect REST API</li>
+            <li>Grafana / InfluxDB</li>
+            <li>Telegraf / Gravwell</li>
+            <li>Proxmox / Virtualization</li>
+            <li>Git / GitHub</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROJECTS ── -->
+<div class="page" id="p-projects">
+  <div class="inner">
+    <div class="projects-header">
+      <div class="eyebrow">// selected work</div>
+      <h2 class="page-title"><strong>Projects</strong></h2>
+    </div>
+  </div>
+
+  <div class="inner" style="padding-top:0;">
+    <div class="projects-grid">
+
+      <div class="proj-card">
+        <div class="proj-num">01 &nbsp;/&nbsp; aerospace systems</div>
+        <h3 class="proj-title">WindRunner Aircraft Systems Architecture</h3>
+        <p class="proj-desc">Systems engineering for the world's largest aircraft by volume. Functional decomposition, requirements development and traceability in Jama Connect and GENESYS, and cross-functional coordination across FAA Part 25 certification workstreams.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">MBSE</span>
+          <span class="proj-tag">FAA Part 25</span>
+          <span class="proj-tag">Jama Connect</span>
+          <span class="proj-tag">GENESYS</span>
+          <span class="proj-tag">IDEF0</span>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-num">02 &nbsp;/&nbsp; financial modeling</div>
+        <h3 class="proj-title">Monte Carlo Operational Cost Model</h3>
+        <p class="proj-desc">Probabilistic maintenance and lifecycle cost model for large transport aircraft. Stochastic distributions for landing gear overhauls, airframe checks, and engine rebuilds — used to support program-level financial planning for the WindRunner program.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Python</span>
+          <span class="proj-tag">Monte Carlo</span>
+          <span class="proj-tag">NumPy</span>
+          <span class="proj-tag">Trent 7000</span>
+        </div>
+        <a href="https://github.com/benboone2" target="_blank" class="proj-link">→ View on GitHub</a>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-num">03 &nbsp;/&nbsp; nuclear / data infra</div>
+        <h3 class="proj-title">Reactor Monitoring &amp; SCADA Dashboard</h3>
+        <p class="proj-desc">Grafana-based monitoring stack for nuclear reactor SCADA/HMI systems deployed in an air-gapped architecture. InfluxDB time-series data with Telegraf ingestion, Gravwell log aggregation, running on Proxmox hypervisors.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Grafana</span>
+          <span class="proj-tag">InfluxDB</span>
+          <span class="proj-tag">Telegraf</span>
+          <span class="proj-tag">Proxmox</span>
+          <span class="proj-tag">SCADA</span>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-num">04 &nbsp;/&nbsp; automation</div>
+        <h3 class="proj-title">Requirements Sync Automation</h3>
+        <p class="proj-desc">REST API tooling to synchronize reused requirements components across Jama Connect projects — eliminating manual duplication and requirement drift across large, multi-project aerospace development programs.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Python</span>
+          <span class="proj-tag">REST API</span>
+          <span class="proj-tag">Jama Connect</span>
+          <span class="proj-tag">Automation</span>
+        </div>
+        <a href="https://github.com/benboone2" target="_blank" class="proj-link">→ View on GitHub</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── BLOG ── -->
+<div class="page" id="p-blog">
+  <div class="inner">
+    <div class="blog-wrap">
+      <div class="blog-icon">✍</div>
+      <div class="eyebrow">// writing</div>
+      <h2 class="page-title"><strong>Blog</strong></h2>
+      <p class="blog-body">
+        I write about energy systems, aerospace engineering, emerging nuclear technologies, and the technical and economic dynamics shaping data center infrastructure. Published on Substack — subscribe to get new posts directly.
+      </p>
+      <a href="https://substack.com/@benjaminboone1" target="_blank" class="blog-btn">Read on Substack →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESUME ── -->
+<div class="page" id="p-resume">
+  <div class="inner">
+    <div class="resume-wrap">
+      <div class="eyebrow">// curriculum vitae</div>
+      <h2 class="page-title"><strong>Resume</strong></h2>
+
+      <div class="resume-card">
+        <div class="resume-icon">📄</div>
+        <div class="resume-meta">
+          <h3>Benjamin Boone — Resume</h3>
+          <p>PDF &nbsp;·&nbsp; Systems Engineer &nbsp;·&nbsp; Aerospace / Nuclear / Energy</p>
+        </div>
+        <!-- Replace resume.pdf with your actual file path -->
+        <a href="resume.pdf" download class="btn btn-primary">Download</a>
+      </div>
+
+      <div class="eyebrow" style="margin-bottom:1.25rem;">// highlights</div>
+      <div class="grid-box">
+        <div class="grid-cell">
+          <h3>Current Role</h3>
+          <ul>
+            <li>Systems Engineer</li>
+            <li>Radia, Inc.</li>
+            <li>WindRunner Program</li>
+          </ul>
+        </div>
+        <div class="grid-cell">
+          <h3>Education</h3>
+          <ul>
+            <li>Mechanical Engineering</li>
+            <li>B.S.</li>
+          </ul>
+        </div>
+        <div class="grid-cell">
+          <h3>Focus Areas</h3>
+          <ul>
+            <li>Aerospace Systems</li>
+            <li>Nuclear / Energy</li>
+            <li>Data Infrastructure</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTACT ── -->
+<div class="page" id="p-contact">
+  <div class="inner">
+    <div class="contact-wrap">
+      <div class="eyebrow">// get in touch</div>
+      <h2 class="page-title"><strong>Contact</strong></h2>
+      <p class="contact-note">
+        Open to roles in energy infrastructure, nuclear systems, and data center engineering. Reach out on LinkedIn or through any of the channels below.
+      </p>
+      <div class="contact-list">
+        <a href="https://www.linkedin.com/in/benjamin-boone-171bba198/" target="_blank" class="contact-row">
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-val">benjamin-boone-171bba198</span>
+          <span class="contact-arrow">↗</span>
+        </a>
+        <a href="https://github.com/benboone2" target="_blank" class="contact-row">
+          <span class="contact-label">GitHub</span>
+          <span class="contact-val">benboone2</span>
+          <span class="contact-arrow">↗</span>
+        </a>
+        <a href="https://substack.com/@benjaminboone1" target="_blank" class="contact-row">
+          <span class="contact-label">Substack</span>
+          <span class="contact-val">benjaminboone1</span>
+          <span class="contact-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Benjamin Boone</p>
+  <p>Systems Engineer — Aerospace · Nuclear · Energy</p>
+</footer>
+
+<script>
+  const pages = ['about', 'projects', 'blog', 'resume', 'contact'];
+
+  function show(name) {
+    pages.forEach(p => {
+      document.getElementById('p-' + p).classList.remove('active');
+      document.getElementById('n-' + p).classList.remove('active');
+    });
+    document.getElementById('p-' + name).classList.add('active');
+    document.getElementById('n-' + name).classList.add('active');
+    window.scrollTo({ top: 0 });
+  }
+</script>
+
+</body>
+</html>
